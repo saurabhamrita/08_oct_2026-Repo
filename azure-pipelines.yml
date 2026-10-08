@@ -1,0 +1,71 @@
+trigger:
+- main
+- feature/*
+
+pool: vistara
+stages:
+  - stage: Terraform scan
+    jobs:
+      - job: scan
+        displayName: secutityscan
+        steps:
+        - task: CmdLine@2
+          inputs:
+            script: 'checkov -d .'
+  - stage: Terraformplan
+    jobs:
+      - job: Terraformplan
+        displayName: plan
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            backendServiceArm: 'Atulservice-connection'
+            backendAzureRmStorageAccountName: 'dddddddd'
+            backendAzureRmContainerName: 'cccccccc'
+            backendAzureRmKey: 'dev.terraform.tfstate'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            environmentServiceNameAzureRM: 'Atulservice-connection'
+
+  - stage: Terraformapply
+    jobs:
+      - job: Manualvalidation
+        displayName: Manual approval before terraform apply
+        pool: server
+        steps:
+        - task: ManualValidation@1
+          timeoutInMinutes: 5000 
+          inputs:
+            notifyUsers: 'sk74564@gmail.com'
+            instructions: |
+               pls review the terraform plan before approving
+      - job: Terraformapply
+        displayName: Apply
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            backendServiceArm: 'Atulservice-connection'
+            backendAzureRmStorageAccountName: 'dddddddd'
+            backendAzureRmContainerName: 'cccccccc'
+            backendAzureRmKey: 'dev.terraform.tfstate'
+
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            environmentServiceNameAzureRM: 'Atulservice-connection'
+        
+
+        
+
+        
