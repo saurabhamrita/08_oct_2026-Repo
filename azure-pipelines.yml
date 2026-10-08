@@ -4,7 +4,7 @@ trigger:
 
 pool: vistara
 stages:
-  - stage: Terraform scan
+  - stage: Securityscan
     jobs:
       - job: scan
         displayName: secutityscan
