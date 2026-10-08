@@ -47,6 +47,8 @@ stages:
                pls review the terraform plan before approving
       - job: Terraformapply
         displayName: Apply
+        dependsOn: Manualvalidation
+        condition: succeeded()
         steps:
         - task: TerraformTask@5
           inputs:
