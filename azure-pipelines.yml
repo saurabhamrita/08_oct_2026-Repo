@@ -1,6 +1,8 @@
 trigger:
 - main
 - feature/*
+variables: 
+  config_path : $(System.DefaultWorkingDirectory)/Environment/dev'
 
 pool: vistara
 stages:
@@ -21,7 +23,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            workingDirectory: $(config_path)
             backendServiceArm: 'Atulservice-connection'
             backendAzureRmStorageAccountName: 'dddddddd'
             backendAzureRmContainerName: 'cccccccc'
@@ -30,7 +32,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'plan'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            workingDirectory: $(config_path)
             environmentServiceNameAzureRM: 'Atulservice-connection'
 
   - stage: Terraformapply
@@ -54,7 +56,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            workingDirectory: $(config_path)
             backendServiceArm: 'Atulservice-connection'
             backendAzureRmStorageAccountName: 'dddddddd'
             backendAzureRmContainerName: 'cccccccc'
@@ -64,7 +66,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'apply'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/dev'
+            workingDirectory: $(config_path)
             environmentServiceNameAzureRM: 'Atulservice-connection'
         
 
